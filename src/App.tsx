@@ -1,7 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
-
+import { NotFound } from '@/components';
 import * as pages from './pages';
-import { NotFound } from './components';
 
 function App() {
   return (
