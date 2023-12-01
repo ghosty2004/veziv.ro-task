@@ -1,3 +1,4 @@
+import { useModal } from '@/context/ModalContext';
 import { MdDelete } from 'react-icons/md';
 
 interface IProps {
@@ -5,10 +6,40 @@ interface IProps {
     name: string;
     website: string | null;
   }>;
-  onRemove?: (index: number) => () => void;
+  onRemoveItem: (index: number) => void;
 }
 
-export const UploadedPortfolios = ({ files }: IProps) => {
+export const UploadedPortfolios = ({ files, onRemoveItem }: IProps) => {
+  const { showConfirmation } = useModal();
+
+  const handleOnRemove = (index: number) => async () => {
+    try {
+      const modalResponse = await showConfirmation({
+        title: 'Are you sure ?',
+        description: `Do you want to delete ${files[index].name} ?\nThis action is irreversible.`,
+        buttons: [
+          {
+            type: 'SECONDARY',
+            uniqueId: 'cancel',
+            label: 'Cancel',
+          },
+          {
+            type: 'PRIMARY',
+            uniqueId: 'delete',
+            label: 'Delete',
+          },
+        ],
+      });
+
+      if (modalResponse.uniqueId === 'delete') {
+        console.log(true);
+        onRemoveItem(index);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <div className="w-full h-full flex flex-col gap-10">
       <div className="flex flex-col items-start gap-3">
@@ -36,7 +67,10 @@ export const UploadedPortfolios = ({ files }: IProps) => {
                 <td>{name}</td>
                 <td>{website}</td>
                 <td>
-                  <button className="flex items-center gap-1 text-white bg-violet-500 hover:bg-violet-500/80 px-2 py-1 rounded-lg text-sm">
+                  <button
+                    className="flex items-center gap-1 text-white bg-violet-500 hover:bg-violet-500/80 px-2 py-1 rounded-lg text-sm"
+                    onClick={handleOnRemove(index)}
+                  >
                     <MdDelete />
                     <span>Remove</span>
                   </button>
