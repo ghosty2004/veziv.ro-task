@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, useState } from 'react';
 import {
   HorizontalLine,
   Layout,
@@ -69,21 +69,29 @@ const Profile = () => (
   </div>
 );
 
-const Portfolios = () => (
-  <div className="flex gap-10">
-    <div className="w-1/2">
-      <UploadedPortfolios
-        files={Array.from({ length: 30 }).map((_, index) => ({
-          name: `name ${index}`,
-          website: `website ${index}`,
-        }))}
-      />
+const Portfolios = () => {
+  const [files, setFiles] = useState(
+    Array.from({ length: 30 }).map((_, index) => ({
+      name: `name ${index}`,
+      website: `website ${index}`,
+    }))
+  );
+
+  const handleItemRemove = (index: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div className="flex gap-10">
+      <div className="w-1/2">
+        <UploadedPortfolios files={files} onRemoveItem={handleItemRemove} />
+      </div>
+      <div className="w-1/2">
+        <UploadFiles />
+      </div>
     </div>
-    <div className="w-1/2">
-      <UploadFiles />
-    </div>
-  </div>
-);
+  );
+};
 
 const Settings = () => null;
 
