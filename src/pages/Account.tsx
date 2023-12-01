@@ -8,18 +8,18 @@ import {
 
 const Profile = () => (
   <div className="flex flex-col gap-10">
-    <div className="flex justify-between">
-      <div className="flex flex-col gap-3">
+    <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-3 w-1/2">
         <span>Personal Info</span>
         <span className="text-xs">
           Update your photo and personal details here
         </span>
       </div>
-      <div className="flex gap-5">
-        <button className="text-violet-400 font-bold bg-white/10 hover:bg-white/20 px-10 rounded-lg">
+      <div className="flex gap-5 max-md:flex-col">
+        <button className="text-violet-400 font-bold bg-white/10 hover:bg-white/20 lg:px-10 rounded-lg max-md:py-1 py-4 max-lg:px-5 max-md:text-xs">
           Cancel
         </button>
-        <button className="text-white bg-violet-500 hover:bg-violet-500/80 px-10 rounded-lg">
+        <button className="text-white bg-violet-500 hover:bg-violet-500/80 lg:px-10 rounded-lg max-md:py-1 py-4 max-lg:px-5 max-md:text-xs">
           Save Changes
         </button>
       </div>
@@ -27,7 +27,7 @@ const Profile = () => (
     <HorizontalLine />
 
     <div className="flex justify-between items-center">
-      <span className="w-[40%]">Name</span>
+      <span className="w-[40%] max-md:text-sm">Name</span>
       <div className="flex gap-10 w-[60%]">
         <input
           className="outline-none bg-white/10 p-3 rounded-lg w-full"
@@ -44,7 +44,7 @@ const Profile = () => (
     <HorizontalLine />
 
     <div className="flex justify-between items-center">
-      <span className="w-[40%]">Email</span>
+      <span className="w-[40%] max-md:text-sm">Email</span>
       <div className="flex gap-10 w-[60%]">
         <input
           className="outline-none bg-white/10 p-3 rounded-lg w-full"
@@ -56,7 +56,7 @@ const Profile = () => (
     <HorizontalLine />
 
     <div className="flex justify-between items-center">
-      <span className="w-[40%]">Personal Website</span>
+      <span className="w-[40%] max-md:text-sm">Personal Website</span>
       <div className="flex gap-10 w-[60%]">
         <input
           className="outline-none bg-white/10 p-3 rounded-lg w-full"
@@ -82,11 +82,11 @@ const Portfolios = () => {
   };
 
   return (
-    <div className="flex gap-10">
-      <div className="w-1/2">
+    <div className="flex gap-10 max-lg:flex-col">
+      <div className="w-1/2 max-lg:w-full">
         <UploadedPortfolios files={files} onRemoveItem={handleItemRemove} />
       </div>
-      <div className="w-1/2">
+      <div className="w-1/2 max-lg:w-full">
         <UploadFiles />
       </div>
     </div>
@@ -129,7 +129,7 @@ export class Account extends Component<{}, IState> {
               ([sectionName, section], index) => (
                 <div className="relative" key={index}>
                   <span
-                    className={`hover:text-violet-400/70 ${
+                    className={`hover:text-violet-400/70 max-lg:text-sm ${
                       this.state.currentSection === section
                         ? 'text-violet-500'
                         : ''

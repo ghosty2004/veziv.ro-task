@@ -43,15 +43,15 @@ export const UploadedPortfolios = ({ files, onRemoveItem }: IProps) => {
   return (
     <div className="w-full h-full flex flex-col gap-10">
       <div className="flex flex-col items-start gap-3">
-        <span className="text-3xl text-white font-bold">
+        <span className="max-md:text-xl text-3xl text-white font-bold">
           Your uploaded portfolios
         </span>
-        <span className="text-lg text-violet-400/90">
+        <span className="max-md:text-sm text-lg text-violet-400/90">
           Here are your portfolios that you have uploaded
         </span>
       </div>
       <div className="w-full">
-        <table className="w-full border-separate border-spacing-2">
+        <table className="w-full border-separate border-spacing-2 max-md:text-xs">
           <thead className="table w-full table-fixed">
             <tr>
               <th className="text-left">ID</th>
@@ -68,11 +68,11 @@ export const UploadedPortfolios = ({ files, onRemoveItem }: IProps) => {
                 <td>{website}</td>
                 <td>
                   <button
-                    className="flex items-center gap-1 text-white bg-violet-500 hover:bg-violet-500/80 px-2 py-1 rounded-lg text-sm"
+                    className="flex items-center gap-1 text-white bg-violet-500 hover:bg-violet-500/80 px-2 py-1 rounded-lg"
                     onClick={handleOnRemove(index)}
                   >
                     <MdDelete />
-                    <span>Remove</span>
+                    <span className="max-md:hidden max-xl:text-xs">Remove</span>
                   </button>
                 </td>
               </tr>

@@ -35,7 +35,7 @@ const ConfirmationModal = ({
 export const ModalContainer = () => {
   const { type, showConfirmation, ...rest } = useModal();
   return (
-    <div className="absolute z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] bg-black rounded-xl p-10">
+    <div className="absolute z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-md:w-[250px] w-[500px] bg-black rounded-xl p-10">
       {type === 'CONFIRMATION' ? (
         <ConfirmationModal
           {...(rest as TModalConfirmationProps &

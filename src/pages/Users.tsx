@@ -6,6 +6,10 @@ export class Users extends Component {
   static visibleInHeader = true;
 
   render() {
-    return <Layout title="Users">There are not available users...</Layout>;
+    return (
+      <Layout title="Users">
+        <div className="flex flex-col bg-white/5 w-full rounded p-3"></div>
+      </Layout>
+    );
   }
 }

@@ -54,14 +54,16 @@ export const UploadFiles = () => {
       onSubmit={handleSubmit}
     >
       <div className="flex flex-col items-start gap-3">
-        <span className="text-3xl text-white font-bold">Upload Files</span>
-        <span className="text-lg text-violet-400/90">
+        <span className="max-md:text-xl text-3xl text-white font-bold">
+          Upload Files
+        </span>
+        <span className="max-md:text-sm text-lg text-violet-400/90">
           Upload documents your want to share
         </span>
       </div>
-      <div className="w-full h-full flex gap-10">
+      <div className="w-full h-full flex max-md:flex-col gap-10">
         <div
-          className="w-1/2 custom-dashed-border flex items-center justify-center flex-col gap-5"
+          className="max-md:h-1/4 max-md:w-full w-1/2 custom-dashed-border flex items-center justify-center flex-col gap-5"
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >
@@ -71,7 +73,7 @@ export const UploadFiles = () => {
             }`}
           />
           <span
-            className={`${
+            className={`max-lg:hidden ${
               isDragging ? 'text-gray-500' : 'text-violet-500/90'
             } font-semibold text-lg text-center`}
           >
@@ -97,11 +99,11 @@ export const UploadFiles = () => {
             className="hidden"
           />
         </div>
-        <div className="w-1/2 flex flex-col gap-4">
+        <div className="max-md:w-full w-1/2 flex flex-col gap-4">
           <span className="text-violet-500/90 font-bold text-xl">
             Selected Files
           </span>
-          <div className="flex flex-col gap-3 max-h-[250px] overflow-auto scrollbar">
+          <div className="flex flex-col gap-3 max-md:max-h-[200px] max-h-[300px] overflow-auto scrollbar">
             {files.map(({ name }, index) => (
               <div
                 key={index}
@@ -116,7 +118,7 @@ export const UploadFiles = () => {
                 <FaFilePdf className="text-violet-500 w-[30px] h-[30px]" />
                 <div className="flex gap-1 flex-col h-full w-full">
                   <span className="flex font-semibold text-sm justify-between">
-                    <p className="text-white">{name} (0%)</p>
+                    <p className="text-white w-3/5">{name} (0%)</p>
                     <p className="text-violet-500/80 font-bold">Waiting</p>
                   </span>
                   <div className="h-1 bg-neutral-600">

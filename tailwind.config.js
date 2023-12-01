@@ -6,6 +6,9 @@ export default {
     fontFamily: {
       inter: 'Inter',
     },
+    container: {
+      padding: '2rem',
+    },
   },
   plugins: [],
 };
