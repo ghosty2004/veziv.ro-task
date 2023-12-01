@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { GiHamburgerMenu } from 'react-icons/gi';
-import * as pages from '@/pages';
+import { getPages } from '@/utils';
 
 interface IProps {
   title: string;
@@ -8,6 +8,7 @@ interface IProps {
 }
 
 const Header = () => {
+  const pages = getPages();
   const navigate = useNavigate();
 
   const handlePageSwitch = (pagePath: string) => () => navigate(pagePath);
@@ -21,9 +22,9 @@ const Header = () => {
         </span>
       </div>
       <div className="flex gap-10 cursor-pointer max-sm:hidden">
-        {Object.entries(pages)
-          .filter(([_, { visibleInHeader }]) => visibleInHeader)
-          .map(([pageName, { pagePath }], index) => (
+        {pages
+          .filter(({ visibleInHeader }) => visibleInHeader)
+          .map(({ pageName, pagePath }, index) => (
             <span
               key={index}
               className={`hover:text-violet-500 ${
