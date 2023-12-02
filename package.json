@@ -1,0 +1,19 @@
+{
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "start": "node server/dist/main",
+    "test": "turbo test"
+  },
+  "prettier": {
+    "tabWidth": 2,
+    "singleQuote": true
+  },
+  "devDependencies": {
+    "turbo": "^1.10.16"
+  }
+}
