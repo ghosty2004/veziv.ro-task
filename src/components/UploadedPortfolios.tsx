@@ -62,7 +62,11 @@ export const UploadedPortfolios = ({ files, onRemoveItem }: IProps) => {
           </thead>
           <tbody className="max-h-[300px] overflow-auto scrollbar block">
             {files.map(({ name, website }, index) => (
-              <tr key={index} className="table w-full table-fixed">
+              <tr
+                data-testid="item"
+                key={index}
+                className="table w-full table-fixed"
+              >
                 <td>{index}</td>
                 <td>{name}</td>
                 <td>{website}</td>

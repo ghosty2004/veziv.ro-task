@@ -50,6 +50,7 @@ export const UploadFiles = () => {
 
   return (
     <form
+      data-testid="form"
       className="w-full h-[550px] flex flex-col gap-10"
       onSubmit={handleSubmit}
     >
