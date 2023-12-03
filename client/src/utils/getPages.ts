@@ -1,5 +1,3 @@
-// import * as pages from '@/pages';
-
 export const getPages = () => [
   {
     pageName: 'Home',
