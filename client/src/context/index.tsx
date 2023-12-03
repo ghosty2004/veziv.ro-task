@@ -1,9 +1,16 @@
 import { ReactNode } from 'react';
 
 import { ModalProvider } from './ModalContext';
+import { UserProvider } from './UserContext';
+
 export const ContextProvider = ({ children }: { children: ReactNode }) => (
-  <ModalProvider>{children}</ModalProvider>
+  <ModalProvider>
+    <UserProvider>
+      <>{children}</>
+    </UserProvider>
+  </ModalProvider>
 );
 
 // exports
-export { ModalProvider } from './ModalContext';
+export * from './ModalContext';
+export * from './UserContext';

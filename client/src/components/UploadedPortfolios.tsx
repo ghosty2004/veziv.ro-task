@@ -1,4 +1,4 @@
-import { useModal } from '@/context/ModalContext';
+import { useModal } from '@/context';
 import { MdDelete } from 'react-icons/md';
 
 interface IProps {
