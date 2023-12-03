@@ -18,4 +18,23 @@ export class User {
     length: 50,
   })
   lastName: string;
+
+  @Column({
+    type: 'varchar',
+    length: 100,
+  })
+  email: string;
+
+  @Column({
+    type: 'varchar',
+    length: 100,
+  })
+  hashedPassword: string;
+
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
+  personalWebsite: string;
 }

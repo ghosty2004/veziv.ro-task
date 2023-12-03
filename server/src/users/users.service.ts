@@ -1,31 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private readonly repository: Repository<User>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  create(user: User) {
-    return 'This action adds a new user';
-  }
+  async getMe(id: number) {
+    const user = await this.userRepository.findOne({
+      where: {
+        id,
+      },
+    });
 
-  findAll() {
-    return `This action returns all users`;
-  }
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+    delete user.hashedPassword;
 
-  update(id: number, user: Partial<User>) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+    return user;
   }
 }
