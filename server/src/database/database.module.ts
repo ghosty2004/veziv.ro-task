@@ -7,7 +7,10 @@ import { UsersPortfolios } from '../users-portfolios/entities/users-portfolio.en
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+      isGlobal: true,
+    }),
 
     TypeOrmModule.forRoot({
       type: 'mysql',
