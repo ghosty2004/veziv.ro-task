@@ -1,18 +1,18 @@
 import { createContext, ReactNode } from 'react';
 import { useQuery } from 'react-query';
-import axios from 'axios';
+import { API } from '@/api';
 
 export const UserContext = createContext<any | null>(null);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const { isLoading, data } = useQuery(['user'], () =>
-    axios
-      .post('/api/users/me', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      })
-      .then((res) => res.data)
+    API.makeRequest(
+      {
+        path: '/api/users/me',
+        method: 'GET',
+      },
+      localStorage.getItem('token')
+    ).then((res) => res)
   );
 
   return !isLoading ? (
