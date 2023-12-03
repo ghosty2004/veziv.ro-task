@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
-    "start": "node server/dist/main",
+    "start:prod": "cd server && npm run start:prod",
     "test": "turbo test"
   },
   "prettier": {
