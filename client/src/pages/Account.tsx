@@ -76,6 +76,7 @@ const Portfolios = () => {
     Array.from({ length: 30 }).map((_, index) => ({
       name: `name ${index}`,
       website: `website ${index}`,
+      visible: length % 2 === 0,
     }))
   );
 
@@ -83,10 +84,22 @@ const Portfolios = () => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const handleVisibilityToggle = (index: number) => {
+    setFiles((prev) =>
+      prev.map((file, i) =>
+        i === index ? { ...file, visible: !file.visible } : file
+      )
+    );
+  };
+
   return (
     <div className="flex gap-10 max-lg:flex-col">
       <div className="w-1/2 max-lg:w-full">
-        <UploadedPortfolios files={files} onRemoveItem={handleItemRemove} />
+        <UploadedPortfolios
+          files={files}
+          onRemoveItem={handleItemRemove}
+          onVisibilityToggle={handleVisibilityToggle}
+        />
       </div>
       <div className="w-1/2 max-lg:w-full">
         <UploadFiles />

@@ -1,15 +1,21 @@
 import { useModal } from '@/context';
-import { MdDelete } from 'react-icons/md';
+import { MdDelete, MdVisibility, MdVisibilityOff } from 'react-icons/md';
 
 interface IProps {
   files: Array<{
     name: string;
     website: string | null;
+    visible: boolean;
   }>;
   onRemoveItem: (index: number) => void;
+  onVisibilityToggle: (index: number) => void;
 }
 
-export const UploadedPortfolios = ({ files, onRemoveItem }: IProps) => {
+export const UploadedPortfolios = ({
+  files,
+  onRemoveItem,
+  onVisibilityToggle,
+}: IProps) => {
   const { showConfirmation } = useModal();
 
   const handleOnRemove = (index: number) => async () => {
@@ -32,12 +38,15 @@ export const UploadedPortfolios = ({ files, onRemoveItem }: IProps) => {
       });
 
       if (modalResponse.uniqueId === 'delete') {
-        console.log(true);
         onRemoveItem(index);
       }
     } catch (e) {
       console.error(e);
     }
+  };
+
+  const handleVisibilityToggle = (index: number) => () => {
+    onVisibilityToggle(index);
   };
 
   return (
@@ -61,7 +70,7 @@ export const UploadedPortfolios = ({ files, onRemoveItem }: IProps) => {
             </tr>
           </thead>
           <tbody className="max-h-[300px] overflow-auto scrollbar block">
-            {files.map(({ name, website }, index) => (
+            {files.map(({ name, website, visible }, index) => (
               <tr
                 data-testid="item"
                 key={index}
@@ -70,13 +79,22 @@ export const UploadedPortfolios = ({ files, onRemoveItem }: IProps) => {
                 <td>{index}</td>
                 <td>{name}</td>
                 <td>{website}</td>
-                <td>
+                <td className="flex max-2xl:flex-col max-lg:justify-around gap-1">
                   <button
-                    className="flex items-center gap-1 text-white bg-violet-500 hover:bg-violet-500/80 px-2 py-1 rounded-lg"
+                    className="flex items-center justify-center gap-1 text-white bg-red-500 hover:bg-red-500/80 p-[2px] rounded-lg text-center"
                     onClick={handleOnRemove(index)}
                   >
                     <MdDelete />
-                    <span className="max-md:hidden max-xl:text-xs">Remove</span>
+                    <span className="max-md:text-[10px]">Remove</span>
+                  </button>
+                  <button
+                    className={`flex items-center justify-center gap-1 text-white p-[2px] rounded-lg bg-gray-500 hover:bg-gray-500/80`}
+                    onClick={handleVisibilityToggle(index)}
+                  >
+                    {visible ? <MdVisibility /> : <MdVisibilityOff />}
+                    <span className="max-md:text-[10px]">
+                      {visible ? 'Hide' : 'Show'}
+                    </span>
                   </button>
                 </td>
               </tr>
