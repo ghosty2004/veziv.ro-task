@@ -2,11 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { getPages } from '@/utils';
 
-interface IProps {
-  title: string;
-  children: React.ReactNode;
-}
-
 export const Header = () => {
   const pages = getPages();
   const navigate = useNavigate();
@@ -16,7 +11,7 @@ export const Header = () => {
   return (
     <div
       data-testid="header"
-      className="w-full h-16 bg-black/95 flex items-center justify-between px-10"
+      className="w-full h-16 bg-black/95 flex flex-wrap items-center justify-between px-10"
     >
       <div className="flex">
         <span className="uppercase font-bold">
@@ -61,7 +56,7 @@ export const Header = () => {
 export const Footer = () => (
   <div
     data-testid="footer"
-    className="mt-auto w-full h-16 bg-black/95 flex items-center justify-between px-10 max-md:text-xs"
+    className="mt-auto w-full h-16 bg-black/95 flex flex-wrap items-center justify-between px-10 max-md:text-xs"
   >
     <span>
       made with ❤️ by{' '}
@@ -78,8 +73,13 @@ export const Footer = () => (
   </div>
 );
 
+interface IProps {
+  title?: string;
+  children: React.ReactNode;
+}
+
 export const Layout = ({ title, children }: IProps) => {
-  window.document.title = title;
+  if (typeof title !== 'undefined') window.document.title = title;
 
   return (
     <div
@@ -89,9 +89,11 @@ export const Layout = ({ title, children }: IProps) => {
       <Header />
 
       <div className="flex flex-col gap-10 container mx-auto my-10">
-        <h1 className="text-4xl text-white uppercase max-md:text-2xl">
-          {title}
-        </h1>
+        {title && (
+          <h1 className="text-4xl text-white uppercase max-md:text-2xl">
+            {title}
+          </h1>
+        )}
         {children}
       </div>
 

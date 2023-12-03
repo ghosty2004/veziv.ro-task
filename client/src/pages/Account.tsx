@@ -100,6 +100,7 @@ interface IState {
 }
 
 export class Account extends Component<{}, IState> {
+  // static properties for page metadata
   static pagePath = '/account';
   static visibleInHeader = false;
 
@@ -123,7 +124,7 @@ export class Account extends Component<{}, IState> {
   render() {
     return (
       <Layout title="Your Account">
-        <div className="flex flex-col bg-white/5 w-full min-h-[600px] rounded p-3">
+        <div className="flex flex-col w-full">
           <div className="flex gap-10 cursor-pointer">
             {Object.entries(Account.sections).map(
               ([sectionName, section], index) => (

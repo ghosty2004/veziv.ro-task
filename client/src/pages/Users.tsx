@@ -2,6 +2,7 @@ import { Layout } from '@/components';
 import { Component } from 'react';
 
 export class Users extends Component {
+  // static properties for page metadata
   static pagePath = '/users';
   static visibleInHeader = true;
 
