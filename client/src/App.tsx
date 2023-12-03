@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { NotFound } from '@/components';
 import { getPages } from '@/utils';
 import { ContextProvider } from './context';
+import * as pagesComponents from './pages';
 
 const queryClient = new QueryClient();
 
@@ -13,10 +14,14 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ContextProvider>
         <Routes>
-          {pages.map(({ Component, pagePath }, index) => (
-            <Route key={index} path={pagePath} element={<Component />} />
-          ))}
-
+          {Object.entries(pagesComponents)
+            .map(([pageName, Component]) => ({
+              ...pages.find((f) => f.pageName === pageName)!,
+              Component,
+            }))
+            .map(({ pagePath, Component }, index) => (
+              <Route key={index} path={pagePath} element={<Component />} />
+            ))}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </ContextProvider>

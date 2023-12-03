@@ -1,10 +1,12 @@
-import { Component, useState } from 'react';
+import { useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import {
   HorizontalLine,
   Layout,
   UploadFiles,
   UploadedPortfolios,
 } from '@/components';
+import { useUser } from '@/context';
 
 const Profile = () => (
   <div className="flex flex-col gap-10">
@@ -95,70 +97,60 @@ const Portfolios = () => {
 
 const Settings = () => null;
 
-interface IState {
-  currentSection: 'PROFILE' | 'PORTFOLIOS' | 'SETTINGS';
-}
+type TCurrentSection = 'PROFILE' | 'PORTFOLIOS' | 'SETTINGS';
 
-export class Account extends Component<{}, IState> {
-  // static properties for page metadata
-  static pagePath = '/account';
-  static visibleInHeader = false;
+const AccountSections: Record<string, TCurrentSection> = {
+  ['My Profile']: 'PROFILE',
+  ['My Portfolios']: 'PORTFOLIOS',
+  ['Settings']: 'SETTINGS',
+};
 
-  static sections: Record<string, IState['currentSection']> = {
-    ['My Profile']: 'PROFILE',
-    ['My Portfolios']: 'PORTFOLIOS',
-    ['Settings']: 'SETTINGS',
+export const Account = () => {
+  const [currentSection, setCurrentSection] =
+    useState<TCurrentSection>('PROFILE');
+
+  const user = useUser();
+
+  const handleSectionChange = (section: TCurrentSection) => () => {
+    setCurrentSection(section);
   };
 
-  constructor(props: {}) {
-    super(props);
-
-    this.state = {
-      currentSection: 'PROFILE',
-    };
-  }
-
-  handleSectionChange = (section: IState['currentSection']) => () =>
-    this.setState({ currentSection: section });
-
-  render() {
-    return (
-      <Layout title="Your Account">
-        <div className="flex flex-col w-full">
-          <div className="flex gap-10 cursor-pointer">
-            {Object.entries(Account.sections).map(
-              ([sectionName, section], index) => (
-                <div className="relative" key={index}>
-                  <span
-                    className={`hover:text-violet-400/70 max-lg:text-sm ${
-                      this.state.currentSection === section
-                        ? 'text-violet-500'
-                        : ''
-                    }`}
-                    onClick={this.handleSectionChange(section)}
-                  >
-                    {sectionName}
-                  </span>
-                  {this.state.currentSection === section && (
-                    <div className="absolute w-full h-[1px] bg-violet-500 my-5" />
-                  )}
-                </div>
-              )
-            )}
-          </div>
-          <div className="w-full h-[1px] bg-white/10 my-5" />
-
-          <div className="w-full">
-            {this.state.currentSection === 'PROFILE' ? (
-              <Profile />
-            ) : this.state.currentSection === 'PORTFOLIOS' ? (
-              <Portfolios />
-            ) : (
-              <Settings />
-            )}
-          </div>
+  return !user ? (
+    <Navigate to="/login" />
+  ) : (
+    <Layout title="Your Account">
+      <div className="flex flex-col w-full">
+        <div className="flex gap-10 cursor-pointer">
+          {Object.entries(AccountSections).map(
+            ([sectionName, section], index) => (
+              <div className="relative" key={index}>
+                <span
+                  className={`hover:text-violet-400/70 max-lg:text-sm ${
+                    currentSection === section ? 'text-violet-500' : ''
+                  }`}
+                  onClick={handleSectionChange(section)}
+                >
+                  {sectionName}
+                </span>
+                {currentSection === section && (
+                  <div className="absolute w-full h-[1px] bg-violet-500 my-5" />
+                )}
+              </div>
+            )
+          )}
         </div>
-      </Layout>
-    );
-  }
-}
+        <div className="w-full h-[1px] bg-white/10 my-5" />
+
+        <div className="w-full">
+          {currentSection === 'PROFILE' ? (
+            <Profile />
+          ) : currentSection === 'PORTFOLIOS' ? (
+            <Portfolios />
+          ) : (
+            <Settings />
+          )}
+        </div>
+      </div>
+    </Layout>
+  );
+};

@@ -1,12 +1,24 @@
-import * as pages from '@/pages';
+// import * as pages from '@/pages';
 
-export const getPages = () =>
-  Object.entries(pages).map(([pageName, Component]) => {
-    const { pagePath, visibleInHeader } = Component;
-    return {
-      pageName,
-      pagePath,
-      visibleInHeader,
-      Component,
-    };
-  });
+export const getPages = () => [
+  {
+    pageName: 'Home',
+    pagePath: '/',
+    visibleInHeader: true,
+  },
+  {
+    pageName: 'Account',
+    pagePath: '/account',
+    visibleInHeader: false,
+  },
+  {
+    pageName: 'Login',
+    pagePath: '/login',
+    visibleInHeader: false,
+  },
+  {
+    pageName: 'Users',
+    pagePath: '/users',
+    visibleInHeader: true,
+  },
+];

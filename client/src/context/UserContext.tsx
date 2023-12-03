@@ -1,8 +1,8 @@
-import { createContext, ReactNode } from 'react';
+import { createContext, useContext, ReactNode } from 'react';
 import { useQuery } from 'react-query';
 import { API } from '@/api';
 
-export const UserContext = createContext<any | null>(null);
+const UserContext = createContext<any | null>(null);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const { isLoading, data } = useQuery(['user'], () =>
@@ -12,10 +12,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         method: 'GET',
       },
       localStorage.getItem('token')
-    ).then((res) => res)
+    ).then((res) => res || true)
   );
 
   return !isLoading ? (
     <UserContext.Provider value={data}>{children}</UserContext.Provider>
   ) : null;
 };
+
+export const useUser = () => useContext(UserContext);
