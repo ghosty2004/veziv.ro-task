@@ -1,8 +1,10 @@
 import { API } from '@/api';
 import { useState, useEffect, useRef } from 'react';
+import { IconType } from 'react-icons';
 import { FaFileUpload } from 'react-icons/fa';
-import { FaFilePdf } from 'react-icons/fa6';
+import { BiSolidFilePdf, BiSolidFilePng, BiSolidFileJpg } from 'react-icons/bi';
 import { IoMdCloseCircle } from 'react-icons/io';
+import { useModal } from '@/context';
 
 const FileStatus = {
   ['WAITING']: 'Waiting',
@@ -11,16 +13,37 @@ const FileStatus = {
   ['ERROR']: 'Error',
 };
 
+const FileIcons = {
+  ['pdf']: BiSolidFilePdf,
+  ['png']: BiSolidFilePng,
+  ['jpg']: BiSolidFileJpg,
+};
+
+const getFileIcon = (file: File) => {
+  const validExtensions = Object.keys(FileIcons);
+  const extension = file.name.split('.').pop();
+  if (typeof extension !== 'undefined' && validExtensions.includes(extension)) {
+    return FileIcons[extension as keyof typeof FileIcons] as IconType;
+  }
+  return null;
+};
+
 export const UploadFiles = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [files, setFiles] = useState<
     Array<{
       file: File;
+      name: string;
+      website: string;
       progress: number;
       status: keyof typeof FileStatus;
+      Icon: IconType;
     }>
   >([]);
+
   const lastDragUpdate = useRef(0);
+
+  const { showPrompt } = useModal();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -34,16 +57,63 @@ export const UploadFiles = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleFilesSet = (files: File[]) => {
-    setFiles((prevState) =>
-      prevState.concat(
-        files.map((file) => ({
-          file,
-          progress: 0,
-          status: 'WAITING',
-        }))
-      )
-    );
+  const handleFilesSet = async (files: File[]) => {
+    for (const file of files) {
+      const { responseUniqueIdButton, responseInputs } = await showPrompt({
+        title: 'Upload File',
+        description: `Complete the form to upload ${file.name}`,
+        fields: [
+          {
+            label: 'Name',
+            type: 'TEXT',
+            placeholder: 'File Name',
+            uniqueId: 'file-name',
+          },
+          {
+            label: 'Website',
+            type: 'TEXT',
+            placeholder: 'File Website',
+            uniqueId: 'file-website',
+          },
+        ],
+        buttons: [
+          {
+            type: 'SECONDARY',
+            uniqueId: 'cancel-button',
+            label: 'Cancel',
+          },
+          {
+            type: 'PRIMARY',
+            uniqueId: 'continue-button',
+            label: 'Continue',
+          },
+        ],
+      });
+
+      if (responseUniqueIdButton === 'continue-button') {
+        const name = responseInputs.find(
+          (f) => f.uniqueId === 'file-name'
+        )?.value;
+        const website = responseInputs.find(
+          (f) => f.uniqueId === 'file-website'
+        )?.value;
+
+        if (typeof name === 'undefined' || typeof website === 'undefined') {
+          return;
+        }
+
+        setFiles((prevState) =>
+          prevState.concat({
+            file,
+            name,
+            website,
+            progress: 0,
+            status: 'WAITING',
+            Icon: getFileIcon(file)!,
+          })
+        );
+      }
+    }
   };
 
   const handleDragOver = (event: React.DragEvent) => {
@@ -87,54 +157,59 @@ export const UploadFiles = () => {
     event.preventDefault();
 
     Promise.all(
-      files.map(
-        async ({ file: mainFile }, index) =>
-          await new Promise<void>((resolve) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(mainFile);
+      files
+        .filter((f) => f.status !== 'UPLOADED')
+        .map(
+          async ({ file: mainFile, name, website }, index) =>
+            await new Promise<void>((resolve) => {
+              const reader = new FileReader();
+              reader.readAsDataURL(mainFile);
 
-            reader.onprogress = (event) => {
-              if (event.lengthComputable) {
-                const progress = Math.round((event.loaded / event.total) * 100);
-                setFileStatus(index, {
-                  status: 'UPLOADING',
-                  progress,
-                });
-              }
-            };
+              reader.onprogress = (event) => {
+                if (event.lengthComputable) {
+                  const progress = Math.round(
+                    (event.loaded / event.total) * 100
+                  );
+                  setFileStatus(index, {
+                    status: 'UPLOADING',
+                    progress,
+                  });
+                }
+              };
 
-            reader.onload = async () => {
-              const dataURL = reader.result;
-              if (typeof dataURL !== 'string') {
-                setFileStatus(index, {
-                  status: 'ERROR',
-                });
-                resolve();
-              } else {
-                const { error } = await API.makeRequest(
-                  {
-                    path: '/api/portfolios',
-                    method: 'POST',
-                    body: {
-                      name: mainFile.name,
-                      dataURL: reader.result as string,
-                    },
-                  },
-                  localStorage.getItem('token')
-                );
-                if (typeof error !== 'undefined') {
+              reader.onload = async () => {
+                const dataURL = reader.result;
+                if (typeof dataURL !== 'string') {
                   setFileStatus(index, {
                     status: 'ERROR',
                   });
+                  resolve();
                 } else {
-                  setFileStatus(index, {
-                    status: 'UPLOADED',
-                  });
+                  const { error } = await API.makeRequest(
+                    {
+                      path: '/api/portfolios',
+                      method: 'POST',
+                      body: {
+                        name,
+                        website,
+                        dataURL: reader.result as string,
+                      },
+                    },
+                    localStorage.getItem('token')
+                  );
+                  if (typeof error !== 'undefined') {
+                    setFileStatus(index, {
+                      status: 'ERROR',
+                    });
+                  } else {
+                    setFileStatus(index, {
+                      status: 'UPLOADED',
+                    });
+                  }
                 }
-              }
-            };
-          })
-      )
+              };
+            })
+        )
     );
   };
 
@@ -195,7 +270,7 @@ export const UploadFiles = () => {
             Selected Files
           </span>
           <div className="flex flex-col gap-3 max-md:max-h-[200px] max-h-[300px] overflow-auto scrollbar">
-            {files.map(({ file, progress, status }, index) => (
+            {files.map(({ name, progress, status, Icon }, index) => (
               <div
                 key={index}
                 className="relative flex gap-4 w-full bg-white/5 px-2 py-4 rounded-lg"
@@ -206,13 +281,23 @@ export const UploadFiles = () => {
                 >
                   <IoMdCloseCircle className="text-white w-[20px] h-[20px] group-hover:text-red-400" />
                 </div>
-                <FaFilePdf className="text-violet-500 w-[30px] h-[30px]" />
+                <Icon className="text-violet-500 w-[30px] h-[30px]" />
                 <div className="flex gap-1 flex-col h-full w-full">
                   <span className="flex font-semibold text-sm justify-between">
                     <p className="text-white w-3/5">
-                      {file.name} ({[progress]}%)
+                      {name} ({[progress]}%)
                     </p>
-                    <p className="text-violet-500/80 font-bold">
+                    <p
+                      className={`${
+                        status === 'WAITING'
+                          ? 'text-yellow-500'
+                          : status === 'UPLOADING'
+                          ? 'text-orange-500'
+                          : status === 'UPLOADED'
+                          ? 'text-green-500'
+                          : 'text-red-500'
+                      } font-bold`}
+                    >
                       {FileStatus[status]}
                     </p>
                   </span>
