@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, ChangeEvent, useRef, FormEvent } from 'react';
 import { Navigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import {
   HorizontalLine,
   Layout,
@@ -7,87 +8,173 @@ import {
   UploadedPortfolios,
 } from '@/components';
 import { useUser } from '@/context';
+import { Portfolio, User } from 'shared/api-entities';
+import { API } from '@/api';
 
-const Profile = () => (
-  <div className="flex flex-col gap-10">
-    <div className="flex justify-between items-center">
-      <div className="flex flex-col gap-3 w-1/2">
-        <span>Personal Info</span>
-        <span className="text-xs">
-          Update your photo and personal details here
-        </span>
-      </div>
-      <div className="flex gap-5 max-md:flex-col">
-        <button className="text-violet-400 font-bold bg-white/10 hover:bg-white/20 lg:px-10 rounded-lg max-md:py-1 py-4 max-lg:px-5 max-md:text-xs">
-          Cancel
-        </button>
-        <button className="text-white bg-violet-500 hover:bg-violet-500/80 lg:px-10 rounded-lg max-md:py-1 py-4 max-lg:px-5 max-md:text-xs">
-          Save Changes
-        </button>
-      </div>
-    </div>
-    <HorizontalLine />
+const Profile = ({ user }: { user: User }) => {
+  const profileRef = useRef<HTMLFormElement>(null);
 
-    <div className="flex justify-between items-center">
-      <span className="w-[40%] max-md:text-sm">Name</span>
-      <div className="flex gap-10 w-[60%]">
-        <input
-          className="outline-none bg-white/10 p-3 rounded-lg w-full"
-          type="text"
-          placeholder="ghosty"
-        />
-        <input
-          className="outline-none bg-white/10 p-3 rounded-lg w-full"
-          type="text"
-          placeholder="2004"
-        />
-      </div>
-    </div>
-    <HorizontalLine />
+  const [modifiedParts, setModifiedParts] = useState<
+    Record<keyof User, any> | {}
+  >({});
 
-    <div className="flex justify-between items-center">
-      <span className="w-[40%] max-md:text-sm">Email</span>
-      <div className="flex gap-10 w-[60%]">
-        <input
-          className="outline-none bg-white/10 p-3 rounded-lg w-full"
-          type="text"
-          placeholder="example@example.com"
-        />
-      </div>
-    </div>
-    <HorizontalLine />
+  const handleModify =
+    (key: keyof User) =>
+    ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
+      setModifiedParts((prev) => ({ ...prev, [key]: value }));
+    };
 
-    <div className="flex justify-between items-center">
-      <span className="w-[40%] max-md:text-sm">Personal Website</span>
-      <div className="flex gap-10 w-[60%]">
-        <input
-          className="outline-none bg-white/10 p-3 rounded-lg w-full"
-          type="text"
-          placeholder="example.com"
-        />
-      </div>
-    </div>
-    <HorizontalLine />
-  </div>
-);
+  const isAnythingModified = Object.entries(modifiedParts).length > 0;
 
-const Portfolios = () => {
-  const [files, setFiles] = useState(
-    Array.from({ length: 30 }).map((_, index) => ({
-      name: `name ${index}`,
-      website: `website ${index}`,
-      visible: length % 2 === 0,
-    }))
+  const isModified = (key: keyof User) =>
+    // @ts-ignore
+    typeof modifiedParts[key] !== 'undefined' ?? false;
+
+  const handleModifyCancel = () => {
+    setModifiedParts({});
+
+    if (profileRef.current) {
+      profileRef.current.querySelectorAll('input').forEach((input) => {
+        input.value = '';
+      });
+    }
+  };
+
+  const handleModifySubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
+    const { error } = await API.makeRequest(
+      {
+        path: '/api/users/me',
+        method: 'PATCH',
+        body: modifiedParts,
+      },
+      localStorage.getItem('token')
+    );
+
+    if (error) return toast(error.message, { type: 'error' });
+
+    toast('Successfully updated your profile!', { type: 'success' });
+  };
+
+  return (
+    <form
+      className="flex flex-col gap-10"
+      ref={profileRef}
+      onSubmit={handleModifySubmit}
+    >
+      <div className="flex justify-between items-center">
+        <div className="flex flex-col gap-3 w-1/2">
+          <span>Personal Info</span>
+          <span className="text-xs">Update your personal details here</span>
+        </div>
+        <div className="flex gap-5 max-md:flex-col">
+          <button
+            onClick={handleModifyCancel}
+            className={`text-violet-400 font-bold bg-white/10 hover:bg-white/20 lg:px-10 rounded-lg max-md:py-1 py-4 max-lg:px-5 max-md:text-xs disabled:cursor-not-allowed`}
+            disabled={!isAnythingModified}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="text-white bg-violet-500 hover:bg-violet-500/80 lg:px-10 rounded-lg max-md:py-1 py-4 max-lg:px-5 max-md:text-xs disabled:cursor-not-allowed"
+            disabled={!isAnythingModified}
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
+      <HorizontalLine />
+
+      <div className="flex justify-between items-center">
+        <span className="w-[40%] max-md:text-sm">Name</span>
+        <div className="flex gap-10 w-[60%]">
+          <input
+            className="outline-none bg-white/10 p-3 rounded-lg w-full"
+            type="text"
+            placeholder={!isModified('firstName') ? user.firstName : ''}
+            onChange={handleModify('firstName')}
+          />
+          <input
+            className="outline-none bg-white/10 p-3 rounded-lg w-full"
+            type="text"
+            placeholder={!isModified('lastName') ? user.lastName : ''}
+            onChange={handleModify('lastName')}
+          />
+        </div>
+      </div>
+      <HorizontalLine />
+
+      <div className="flex justify-between items-center">
+        <span className="w-[40%] max-md:text-sm">Email</span>
+        <div className="flex gap-10 w-[60%]">
+          <input
+            className="outline-none bg-white/10 p-3 rounded-lg w-full"
+            type="email"
+            placeholder={!isModified('email') ? user.email : ''}
+            onChange={handleModify('email')}
+          />
+        </div>
+      </div>
+      <HorizontalLine />
+
+      <div className="flex justify-between items-center">
+        <span className="w-[40%] max-md:text-sm">Personal Website</span>
+        <div className="flex gap-10 w-[60%]">
+          <input
+            className="outline-none bg-white/10 p-3 rounded-lg w-full"
+            type="text"
+            placeholder={
+              !isModified('personalWebsite')
+                ? user.personalWebsite ?? 'N/A'
+                : ''
+            }
+            onChange={handleModify('personalWebsite')}
+          />
+        </div>
+      </div>
+      <HorizontalLine />
+    </form>
   );
+};
 
-  const handleItemRemove = (index: number) => {
+const Portfolios = ({ user }: { user: User }) => {
+  const [files, setFiles] = useState<Portfolio[]>(user.portfolios!);
+
+  const handleItemRemove = async (index: number) => {
+    const { error } = await API.makeRequest(
+      {
+        path: `/api/portfolios/${files[index].id}`,
+        method: 'DELETE',
+      },
+      localStorage.getItem('token')
+    );
+
+    if (typeof error !== 'undefined')
+      return toast(error.message, { type: 'error' });
+
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleVisibilityToggle = (index: number) => {
+  const handleVisibilityToggle = async (index: number) => {
+    const { error } = await API.makeRequest(
+      {
+        path: `/api/portfolios/${files[index].id}`,
+        method: 'PATCH',
+        body: {
+          hidden: !files[index].hidden,
+        },
+      },
+      localStorage.getItem('token')
+    );
+
+    if (typeof error !== 'undefined')
+      return toast(error.message, { type: 'error' });
+
     setFiles((prev) =>
       prev.map((file, i) =>
-        i === index ? { ...file, visible: !file.visible } : file
+        i === index ? { ...file, hidden: !file.hidden } : file
       )
     );
   };
@@ -108,14 +195,11 @@ const Portfolios = () => {
   );
 };
 
-const Settings = () => null;
-
-type TCurrentSection = 'PROFILE' | 'PORTFOLIOS' | 'SETTINGS';
+type TCurrentSection = 'PROFILE' | 'PORTFOLIOS';
 
 const AccountSections: Record<string, TCurrentSection> = {
   ['My Profile']: 'PROFILE',
   ['My Portfolios']: 'PORTFOLIOS',
-  ['Settings']: 'SETTINGS',
 };
 
 export const Account = () => {
@@ -126,6 +210,11 @@ export const Account = () => {
 
   const handleSectionChange = (section: TCurrentSection) => () => {
     setCurrentSection(section);
+  };
+
+  const handleLogOut = () => {
+    localStorage.removeItem('token');
+    window.location.reload();
   };
 
   return !user ? (
@@ -151,16 +240,17 @@ export const Account = () => {
               </div>
             )
           )}
+          <span className="max-lg:text-sm" onClick={handleLogOut}>
+            Log out
+          </span>
         </div>
         <div className="w-full h-[1px] bg-white/10 my-5" />
 
         <div className="w-full">
           {currentSection === 'PROFILE' ? (
-            <Profile />
-          ) : currentSection === 'PORTFOLIOS' ? (
-            <Portfolios />
+            <Profile user={user} />
           ) : (
-            <Settings />
+            <Portfolios user={user} />
           )}
         </div>
       </div>

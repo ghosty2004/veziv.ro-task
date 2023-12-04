@@ -1,11 +1,25 @@
+import { API } from '@/api';
 import { useState, useEffect, useRef } from 'react';
 import { FaFileUpload } from 'react-icons/fa';
 import { FaFilePdf } from 'react-icons/fa6';
 import { IoMdCloseCircle } from 'react-icons/io';
 
+const FileStatus = {
+  ['WAITING']: 'Waiting',
+  ['UPLOADING']: 'Uploading',
+  ['UPLOADED']: 'Uploaded',
+  ['ERROR']: 'Error',
+};
+
 export const UploadFiles = () => {
   const [isDragging, setIsDragging] = useState(false);
-  const [files, setFiles] = useState<File[]>([]);
+  const [files, setFiles] = useState<
+    Array<{
+      file: File;
+      progress: number;
+      status: keyof typeof FileStatus;
+    }>
+  >([]);
   const lastDragUpdate = useRef(0);
 
   useEffect(() => {
@@ -20,6 +34,18 @@ export const UploadFiles = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const handleFilesSet = (files: File[]) => {
+    setFiles((prevState) =>
+      prevState.concat(
+        files.map((file) => ({
+          file,
+          progress: 0,
+          status: 'WAITING',
+        }))
+      )
+    );
+  };
+
   const handleDragOver = (event: React.DragEvent) => {
     event.preventDefault();
     lastDragUpdate.current = Date.now();
@@ -29,14 +55,14 @@ export const UploadFiles = () => {
     event.preventDefault();
     const { files } = event.dataTransfer;
     if (files) {
-      setFiles((prevState) => [...prevState, ...files]);
+      handleFilesSet([...files]);
     }
   };
 
   const handleFilesUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = event.target;
     if (files) {
-      setFiles((prevState) => [...prevState, ...files]);
+      handleFilesSet([...files]);
     }
   };
 
@@ -44,8 +70,72 @@ export const UploadFiles = () => {
     setFiles((prevState) => prevState.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const setFileStatus = (
+    index: number,
+    { status, progress }: { status: keyof typeof FileStatus; progress?: number }
+  ) => {
+    setFiles((prevState) =>
+      prevState.map((file, i) =>
+        i === index
+          ? { ...file, status, progress: progress ?? file.progress }
+          : file
+      )
+    );
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    Promise.all(
+      files.map(
+        async ({ file: mainFile }, index) =>
+          await new Promise<void>((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(mainFile);
+
+            reader.onprogress = (event) => {
+              if (event.lengthComputable) {
+                const progress = Math.round((event.loaded / event.total) * 100);
+                setFileStatus(index, {
+                  status: 'UPLOADING',
+                  progress,
+                });
+              }
+            };
+
+            reader.onload = async () => {
+              const dataURL = reader.result;
+              if (typeof dataURL !== 'string') {
+                setFileStatus(index, {
+                  status: 'ERROR',
+                });
+                resolve();
+              } else {
+                const { error } = await API.makeRequest(
+                  {
+                    path: '/api/portfolios',
+                    method: 'POST',
+                    body: {
+                      name: mainFile.name,
+                      dataURL: reader.result as string,
+                    },
+                  },
+                  localStorage.getItem('token')
+                );
+                if (typeof error !== 'undefined') {
+                  setFileStatus(index, {
+                    status: 'ERROR',
+                  });
+                } else {
+                  setFileStatus(index, {
+                    status: 'UPLOADED',
+                  });
+                }
+              }
+            };
+          })
+      )
+    );
   };
 
   return (
@@ -105,7 +195,7 @@ export const UploadFiles = () => {
             Selected Files
           </span>
           <div className="flex flex-col gap-3 max-md:max-h-[200px] max-h-[300px] overflow-auto scrollbar">
-            {files.map(({ name }, index) => (
+            {files.map(({ file, progress, status }, index) => (
               <div
                 key={index}
                 className="relative flex gap-4 w-full bg-white/5 px-2 py-4 rounded-lg"
@@ -119,13 +209,17 @@ export const UploadFiles = () => {
                 <FaFilePdf className="text-violet-500 w-[30px] h-[30px]" />
                 <div className="flex gap-1 flex-col h-full w-full">
                   <span className="flex font-semibold text-sm justify-between">
-                    <p className="text-white w-3/5">{name} (0%)</p>
-                    <p className="text-violet-500/80 font-bold">Waiting</p>
+                    <p className="text-white w-3/5">
+                      {file.name} ({[progress]}%)
+                    </p>
+                    <p className="text-violet-500/80 font-bold">
+                      {FileStatus[status]}
+                    </p>
                   </span>
                   <div className="h-1 bg-neutral-600">
                     <div
                       className="h-1 bg-violet-500"
-                      style={{ width: '0%' }}
+                      style={{ width: `${progress}%` }}
                     ></div>
                   </div>
                 </div>

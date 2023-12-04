@@ -1,11 +1,15 @@
 import { useState, useRef } from 'react';
 import { Navigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { Layout } from '@/components';
 import { useUser } from '@/context';
+import { API } from '@/api';
 
 export const Login = () => {
   const [type, setType] = useState<'LOGIN' | 'REGISTER'>('LOGIN');
 
+  const firstNameRef = useRef<HTMLInputElement>(null);
+  const lastNameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
@@ -15,17 +19,66 @@ export const Login = () => {
     setType((prevType) => (prevType === 'LOGIN' ? 'REGISTER' : 'LOGIN'));
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const processResponseToken = (token?: string) => {
+    if (typeof token !== 'string') return;
+    localStorage.setItem('token', token);
+    window.location.reload();
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    const firstName = firstNameRef.current?.value;
+    const lastName = lastNameRef.current?.value;
     const email = emailRef.current?.value;
     const password = passwordRef.current?.value;
 
-    console.log(
-      `You just provided the following credentials:`,
-      email,
-      password
-    );
+    if (typeof email === 'undefined' || typeof password === 'undefined') return;
+
+    switch (type) {
+      case 'LOGIN':
+        const { response, error } = await API.makeRequest({
+          path: '/api/auth/login',
+          method: 'POST',
+          body: {
+            email,
+            password,
+          },
+        });
+
+        if (error) {
+          toast(error.message, {
+            type: 'error',
+          });
+        }
+
+        processResponseToken(response.token);
+        break;
+      case 'REGISTER':
+        if (typeof firstName === 'undefined' || typeof lastName === 'undefined')
+          return;
+
+        const { response: registerResponse, error: registerError } =
+          await API.makeRequest({
+            path: '/api/auth/register',
+            method: 'POST',
+            body: {
+              firstName,
+              lastName,
+              email,
+              password,
+            },
+          });
+
+        if (registerError) {
+          toast(registerError.message, {
+            type: 'error',
+          });
+        }
+
+        processResponseToken(registerResponse.token);
+        break;
+    }
   };
 
   return user ? (
@@ -45,6 +98,7 @@ export const Login = () => {
                   className="outline-none bg-white/5 p-2 rounded text-sm"
                   type="text"
                   placeholder="Enter first name"
+                  ref={firstNameRef}
                 />
               </div>
               <div className="flex flex-col">
@@ -53,6 +107,7 @@ export const Login = () => {
                   className="outline-none bg-white/5 p-2 rounded text-sm"
                   type="text"
                   placeholder="Enter last name"
+                  ref={lastNameRef}
                 />
               </div>
             </>
