@@ -3,6 +3,7 @@ import {
   TModal,
   TModalConfirmationProps,
   TModalMethods,
+  TModalPromptProps,
   TModalResponses,
 } from '@/types/TModal';
 import { createContext, useContext, useState, ReactNode } from 'react';
@@ -29,8 +30,23 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+  const showPrompt = async (
+    props: TModalPromptProps
+  ): Promise<TModalResponses<'PROMPT'>> => {
+    return new Promise((response) => {
+      setState({
+        type: 'PROMPT',
+        handleResponse: (res) => {
+          setState({ type: null });
+          response(res);
+        },
+        ...props,
+      });
+    });
+  };
+
   return (
-    <ModalContext.Provider value={{ ...state, showConfirmation }}>
+    <ModalContext.Provider value={{ ...state, showConfirmation, showPrompt }}>
       {state.type !== null && <ModalContainer />}
       <div className={state.type !== null ? 'brightness-[0.3]' : ''}>
         {children}
