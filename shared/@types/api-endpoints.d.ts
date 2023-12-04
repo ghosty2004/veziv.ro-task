@@ -1,9 +1,11 @@
 declare module 'shared/api-endpoints' {
+  import { Portfolio, User } from 'shared/api-entities';
+
   export type ApiEndpoints =
     | {
         path: '/api/auth/login';
-        method: 'GET';
-        expectedBody: {
+        method: 'POST';
+        body: {
           email: string;
           password: string;
         };
@@ -11,7 +13,7 @@ declare module 'shared/api-endpoints' {
     | {
         path: '/api/auth/register';
         method: 'POST';
-        expectedBody: {
+        body: {
           firstName: string;
           lastName: string;
           email: string;
@@ -21,6 +23,26 @@ declare module 'shared/api-endpoints' {
     | {
         path: '/api/users/me';
         method: 'GET';
-        expectedBody: {};
+        body: {};
+      }
+    | {
+        path: '/api/users/me';
+        method: 'PATCH';
+        body: Partial<User>;
+      }
+    | {
+        path: '/api/portfolios';
+        method: 'POST';
+        body: Partial<Portfolio>;
+      }
+    | {
+        path: `/api/portfolios/${string}`;
+        method: 'PATCH';
+        body: Partial<Portfolio>;
+      }
+    | {
+        path: `/api/portfolios/${string}`;
+        method: 'DELETE';
+        body: {};
       };
 }
