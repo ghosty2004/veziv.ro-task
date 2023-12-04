@@ -1,12 +1,21 @@
 import axios from 'axios';
 import type { ApiEndpoints } from 'shared/api-endpoints';
 
+interface IApiResponse {
+  response?: any;
+  error?: {
+    message: string;
+    error: string;
+    statusCode: number;
+  };
+}
+
 export class API {
   static async makeRequest<T extends ApiEndpoints>(
     endpoint: Partial<T>,
     token?: string | null
-  ): Promise<any> {
-    const { path: url, method, expectedBody: data } = endpoint;
+  ): Promise<IApiResponse> {
+    const { path: url, method, body: data } = endpoint;
 
     const headers =
       typeof token === 'string' ? { Authorization: `Bearer ${token}` } : {};
@@ -19,10 +28,11 @@ export class API {
         headers,
       });
 
-      return response.data;
-    } catch (e) {
-      console.error(e);
-      return null;
+      return { response: response.data };
+    } catch (e: any) {
+      return {
+        error: e.response.data,
+      };
     }
   }
 }

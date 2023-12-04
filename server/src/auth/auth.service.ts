@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { hash as argonHash, verify as argonVerify } from 'argon2';
 import { LoginDto, RegisterDto } from './dto';
-import { User } from '../users/entities/user.entity';
+import { User } from '../database/entities';
 
 @Injectable()
 export class AuthService {

@@ -7,7 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../users/entities/user.entity';
+import { User } from '../database/entities';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -39,8 +39,7 @@ export class AuthGuard implements CanActivate {
       request['user'] = user;
 
       return true;
-    } catch (e) {
-      console.error(e);
+    } catch {
       throw new UnauthorizedException();
     }
   }

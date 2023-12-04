@@ -55,7 +55,7 @@ export const Header = ({
   return (
     <div
       data-testid="header"
-      className="w-full h-16 bg-black/95 flex flex-wrap items-center justify-between px-10"
+      className="fixed w-full h-16 bg-black flex flex-wrap items-center justify-between px-10"
     >
       <div className="flex">
         <span className="uppercase font-bold">
@@ -139,7 +139,7 @@ export const Layout = ({ title, children }: IProps) => {
     >
       <Header setNavBarActive={setNavBarActive} />
 
-      <div className="flex flex-col gap-10 container mx-auto my-10">
+      <div className="flex flex-col gap-10 container mx-auto my-10 pt-[50px]">
         {title && (
           <h1 className="text-4xl text-white uppercase max-md:text-2xl">
             {title}

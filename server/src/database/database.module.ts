@@ -2,8 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 
-import { User } from '../users/entities/user.entity';
-import { UsersPortfolios } from '../users-portfolios/entities/users-portfolio.entity';
+import { User, Portfolio } from './entities';
 
 @Module({
   imports: [
@@ -20,8 +19,7 @@ import { UsersPortfolios } from '../users-portfolios/entities/users-portfolio.en
       password: process.env.DB_PASSWORD || '',
       database: process.env.DB_NAME || 'test',
       synchronize: process.env.NODE_ENV === 'development',
-      dropSchema: process.env.NODE_ENV === 'development',
-      entities: [User, UsersPortfolios],
+      entities: [User, Portfolio],
     }),
   ],
 })

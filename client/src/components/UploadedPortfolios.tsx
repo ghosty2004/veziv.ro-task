@@ -1,12 +1,9 @@
 import { useModal } from '@/context';
 import { MdDelete, MdVisibility, MdVisibilityOff } from 'react-icons/md';
+import { Portfolio } from 'shared/api-entities';
 
 interface IProps {
-  files: Array<{
-    name: string;
-    website: string | null;
-    visible: boolean;
-  }>;
+  files: Portfolio[];
   onRemoveItem: (index: number) => void;
   onVisibilityToggle: (index: number) => void;
 }
@@ -70,15 +67,15 @@ export const UploadedPortfolios = ({
             </tr>
           </thead>
           <tbody className="max-h-[300px] overflow-auto scrollbar block">
-            {files.map(({ name, website, visible }, index) => (
+            {files.map(({ id, name, website, hidden }, index) => (
               <tr
                 data-testid="item"
-                key={index}
+                key={id}
                 className="table w-full table-fixed"
               >
-                <td>{index}</td>
+                <td>{id}</td>
                 <td>{name}</td>
-                <td>{website}</td>
+                <td>{website ?? 'none'}</td>
                 <td className="flex max-2xl:flex-col max-lg:justify-around gap-1">
                   <button
                     className="flex items-center justify-center gap-1 text-white bg-red-500 hover:bg-red-500/80 p-[2px] rounded-lg text-center"
@@ -91,9 +88,9 @@ export const UploadedPortfolios = ({
                     className={`flex items-center justify-center gap-1 text-white p-[2px] rounded-lg bg-gray-500 hover:bg-gray-500/80`}
                     onClick={handleVisibilityToggle(index)}
                   >
-                    {visible ? <MdVisibility /> : <MdVisibilityOff />}
+                    {hidden ? <MdVisibility /> : <MdVisibilityOff />}
                     <span className="max-md:text-[10px]">
-                      {visible ? 'Hide' : 'Show'}
+                      {hidden ? 'Hide' : 'Show'}
                     </span>
                   </button>
                 </td>
