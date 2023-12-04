@@ -23,7 +23,7 @@ body {
       @apply bg-black;
     }
     &::-webkit-scrollbar-thumb {
-      @apply bg-violet-500;
+      @apply bg-indigo-500;
     }
   }
 

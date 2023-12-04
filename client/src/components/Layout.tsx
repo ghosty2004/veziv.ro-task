@@ -32,7 +32,7 @@ const Navbar = ({
       </div>
       <button
         data-testid="my-account-button"
-        className="flex items-center justify-center gap-1 bg-violet-600 hover:bg-violet-600/90 w-[120px] h-[40px] rounded-lg"
+        className="flex items-center justify-center gap-1 bg-indigo-600 hover:bg-indigo-600/90 w-[120px] h-[40px] rounded-lg"
         onClick={() => navigate('/account')}
       >
         <MdAccountCircle />
@@ -72,9 +72,9 @@ export const Header = ({
           .map(({ pageName, pagePath }, index) => (
             <span
               key={index}
-              className={`hover:text-violet-500 ${
+              className={`hover:text-indigo-500 flex items-center justify-center rounded-lg ${
                 window.location.pathname === pagePath
-                  ? 'text-violet-500/90'
+                  ? 'text-indigo-500/90'
                   : ''
               }`}
               onClick={() => navigate(pagePath)}
@@ -85,7 +85,7 @@ export const Header = ({
       </div>
       <button
         data-testid="my-account-button"
-        className="flex items-center gap-1 bg-violet-600 hover:bg-violet-600/90 p-2 rounded-lg max-sm:hidden"
+        className="flex items-center gap-1 bg-indigo-600 hover:bg-indigo-600/90 p-2 rounded-lg max-sm:hidden"
         onClick={() => navigate('/account')}
       >
         <MdAccountCircle />
@@ -109,13 +109,13 @@ export const Footer = () => (
   >
     <span>
       made with ❤️ by{' '}
-      <a className="hover:text-violet-400" href="https://github.com/ghosty2004">
+      <a className="hover:text-indigo-400" href="https://github.com/ghosty2004">
         ghosty2004
       </a>
     </span>
     <span>
       for{' '}
-      <a className="hover:text-violet-400" href="https://veziv.ro">
+      <a className="hover:text-indigo-400" href="https://veziv.ro">
         veziv.ro
       </a>
     </span>

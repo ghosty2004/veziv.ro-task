@@ -52,7 +52,7 @@ export const UploadedPortfolios = ({
         <span className="max-md:text-xl text-3xl text-white font-bold">
           Your uploaded portfolios
         </span>
-        <span className="max-md:text-sm text-lg text-violet-400/90">
+        <span className="max-md:text-sm text-lg text-indigo-400/90">
           Here are your portfolios that you have uploaded
         </span>
       </div>

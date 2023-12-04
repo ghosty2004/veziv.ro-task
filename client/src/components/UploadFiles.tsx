@@ -223,7 +223,7 @@ export const UploadFiles = () => {
         <span className="max-md:text-xl text-3xl text-white font-bold">
           Upload Files
         </span>
-        <span className="max-md:text-sm text-lg text-violet-400/90">
+        <span className="max-md:text-sm text-lg text-indigo-400/90">
           Upload documents your want to share
         </span>
       </div>
@@ -235,12 +235,12 @@ export const UploadFiles = () => {
         >
           <FaFileUpload
             className={`w-[40px] h-[40px] ${
-              isDragging ? 'text-gray-500/90' : 'text-violet-500/90'
+              isDragging ? 'text-gray-500/90' : 'text-indigo-500/90'
             }`}
           />
           <span
             className={`max-lg:hidden ${
-              isDragging ? 'text-gray-500' : 'text-violet-500/90'
+              isDragging ? 'text-gray-500' : 'text-indigo-500/90'
             } font-semibold text-lg text-center`}
           >
             <p>Drag and drop files here</p>
@@ -252,7 +252,7 @@ export const UploadFiles = () => {
             className={`${
               isDragging
                 ? 'hidden'
-                : 'bg-violet-800 hover:bg-violet-800/80 px-4 py-1 rounded-lg cursor-pointer'
+                : 'bg-indigo-800 hover:bg-indigo-800/80 px-4 py-1 rounded-lg cursor-pointer'
             }`}
           >
             Browse Files
@@ -266,7 +266,7 @@ export const UploadFiles = () => {
           />
         </div>
         <div className="max-md:w-full w-1/2 flex flex-col gap-4">
-          <span className="text-violet-500/90 font-bold text-xl">
+          <span className="text-indigo-500/90 font-bold text-xl">
             Selected Files
           </span>
           <div className="flex flex-col gap-3 max-md:max-h-[200px] max-h-[300px] overflow-auto scrollbar">
@@ -281,7 +281,7 @@ export const UploadFiles = () => {
                 >
                   <IoMdCloseCircle className="text-white w-[20px] h-[20px] group-hover:text-red-400" />
                 </div>
-                <Icon className="text-violet-500 w-[30px] h-[30px]" />
+                <Icon className="text-indigo-500 w-[30px] h-[30px]" />
                 <div className="flex gap-1 flex-col h-full w-full">
                   <span className="flex font-semibold text-sm justify-between">
                     <p className="text-white w-3/5">
@@ -303,7 +303,7 @@ export const UploadFiles = () => {
                   </span>
                   <div className="h-1 bg-neutral-600">
                     <div
-                      className="h-1 bg-violet-500"
+                      className="h-1 bg-indigo-500"
                       style={{ width: `${progress}%` }}
                     ></div>
                   </div>
@@ -314,7 +314,7 @@ export const UploadFiles = () => {
         </div>
       </div>
       <button
-        className="bg-violet-500 hover:bg-violet-500/90 p-1 rounded-lg"
+        className="bg-indigo-500 hover:bg-indigo-500/90 p-1 rounded-lg"
         type="submit"
       >
         Upload

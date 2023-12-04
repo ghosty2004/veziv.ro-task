@@ -18,8 +18,8 @@ const Buttons = ({
         key={uniqueId}
         className={`px-2 py-1 w-full font-bold rounded ${
           type === 'PRIMARY'
-            ? 'bg-violet-600 hover:bg-violet-600/90 text-white'
-            : 'bg-white hover:bg-white/90 text-violet-500'
+            ? 'bg-indigo-600 hover:bg-indigo-600/90 text-white'
+            : 'bg-white hover:bg-white/90 text-indigo-500'
         }`}
         onClick={() => onButtonPress(uniqueId)}
       >

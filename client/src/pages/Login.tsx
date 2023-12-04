@@ -132,7 +132,7 @@ export const Login = () => {
             />
           </div>
           <button
-            className="bg-white hover:bg-white/80 p-3 text-violet-600 font-bold rounded"
+            className="bg-white hover:bg-white/80 p-3 text-indigo-600 font-bold rounded"
             type="submit"
           >
             {type === 'LOGIN' ? 'Log in' : 'Register'}
@@ -143,7 +143,7 @@ export const Login = () => {
             ? "Don't have an account?"
             : 'Already have an account?'}{' '}
           <p
-            className="hover:text-violet-500 cursor-pointer"
+            className="hover:text-indigo-500 cursor-pointer"
             onClick={handleTypeSwitch}
           >
             Create one

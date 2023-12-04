@@ -71,14 +71,14 @@ const Profile = ({ user }: { user: User }) => {
         <div className="flex gap-5 max-md:flex-col">
           <button
             onClick={handleModifyCancel}
-            className={`text-violet-400 font-bold bg-white/10 hover:bg-white/20 lg:px-10 rounded-lg max-md:py-1 py-4 max-lg:px-5 max-md:text-xs disabled:cursor-not-allowed`}
+            className={`text-indigo-400 font-bold bg-white/10 hover:bg-white/20 lg:px-10 rounded-lg max-md:py-1 py-4 max-lg:px-5 max-md:text-xs disabled:cursor-not-allowed`}
             disabled={!isAnythingModified}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="text-white bg-violet-500 hover:bg-violet-500/80 lg:px-10 rounded-lg max-md:py-1 py-4 max-lg:px-5 max-md:text-xs disabled:cursor-not-allowed"
+            className="text-white bg-indigo-500 hover:bg-indigo-500/80 lg:px-10 rounded-lg max-md:py-1 py-4 max-lg:px-5 max-md:text-xs disabled:cursor-not-allowed"
             disabled={!isAnythingModified}
           >
             Save Changes
@@ -227,15 +227,15 @@ export const Account = () => {
             ([sectionName, section], index) => (
               <div className="relative" key={index}>
                 <span
-                  className={`hover:text-violet-400/70 max-lg:text-sm ${
-                    currentSection === section ? 'text-violet-500' : ''
+                  className={`hover:text-indigo-400/70 max-lg:text-sm ${
+                    currentSection === section ? 'text-indigo-500' : ''
                   }`}
                   onClick={handleSectionChange(section)}
                 >
                   {sectionName}
                 </span>
                 {currentSection === section && (
-                  <div className="absolute w-full h-[1px] bg-violet-500 my-5" />
+                  <div className="absolute w-full h-[1px] bg-indigo-500 my-5" />
                 )}
               </div>
             )
