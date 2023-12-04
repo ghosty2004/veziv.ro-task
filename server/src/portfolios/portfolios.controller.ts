@@ -26,6 +26,7 @@ export class PortfoliosController {
     @GetUser() user: User,
     @Body() createPortfolioDto: CreatePortfolioDto,
   ) {
+    console.log(user);
     return this.portfoliosService.create(user, createPortfolioDto);
   }
 

@@ -25,7 +25,7 @@ export class Portfolio {
   hidden: boolean;
 
   @Column({
-    type: 'blob',
+    type: 'mediumblob',
   })
   file: Buffer;
 }

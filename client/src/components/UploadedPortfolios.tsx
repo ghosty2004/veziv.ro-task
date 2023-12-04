@@ -17,7 +17,7 @@ export const UploadedPortfolios = ({
 
   const handleOnRemove = (index: number) => async () => {
     try {
-      const modalResponse = await showConfirmation({
+      const { responseUniqueIdButton } = await showConfirmation({
         title: 'Are you sure ?',
         description: `Do you want to delete ${files[index].name} ?\nThis action is irreversible.`,
         buttons: [
@@ -34,7 +34,7 @@ export const UploadedPortfolios = ({
         ],
       });
 
-      if (modalResponse.uniqueId === 'delete') {
+      if (responseUniqueIdButton === 'delete') {
         onRemoveItem(index);
       }
     } catch (e) {
@@ -71,12 +71,12 @@ export const UploadedPortfolios = ({
               <tr
                 data-testid="item"
                 key={id}
-                className="table w-full table-fixed"
+                className="table w-full table-fixed overflow-hidden"
               >
                 <td>{id}</td>
                 <td>{name}</td>
                 <td>{website ?? 'none'}</td>
-                <td className="flex max-2xl:flex-col max-lg:justify-around gap-1">
+                <td className="flex max-2xl:flex-col max-lg:justify-around gap-1 2xl:w-[180px]">
                   <button
                     className="flex items-center justify-center gap-1 text-white bg-red-500 hover:bg-red-500/80 p-[2px] rounded-lg text-center"
                     onClick={handleOnRemove(index)}
@@ -85,12 +85,16 @@ export const UploadedPortfolios = ({
                     <span className="max-md:text-[10px]">Remove</span>
                   </button>
                   <button
-                    className={`flex items-center justify-center gap-1 text-white p-[2px] rounded-lg bg-gray-500 hover:bg-gray-500/80`}
+                    className={`flex items-center justify-center gap-1 text-white p-[2px] rounded-lg bg-gray-700 hover:bg-gray-700/80 2xl:w-[80px]`}
                     onClick={handleVisibilityToggle(index)}
                   >
                     {hidden ? <MdVisibility /> : <MdVisibilityOff />}
-                    <span className="max-md:text-[10px]">
-                      {hidden ? 'Hide' : 'Show'}
+                    <span
+                      className={`max-md:text-[10px] font-bold ${
+                        hidden ? 'text-green-500' : 'text-red-500'
+                      }`}
+                    >
+                      {!hidden ? 'Private' : 'Public'}
                     </span>
                   </button>
                 </td>
