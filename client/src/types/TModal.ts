@@ -1,4 +1,4 @@
-export type TModalTypes = 'CONFIRMATION' | 'PROMPT' | null; // maybe more types in the future...
+export type TModalTypes = 'CONFIRMATION' | 'PROMPT' | 'DATAURL_EMBED' | null; // maybe more types in the future...
 
 export type TModalButtonsTypes = 'PRIMARY' | 'SECONDARY';
 
@@ -13,14 +13,16 @@ export type TModalConfirmationProps = {
 };
 
 export type TModalPromptProps = TModalConfirmationProps & {
-  title: string;
-  description: string;
   fields: Array<{
     type: 'TEXT' | 'PASSWORD';
     uniqueId: string;
     label: string;
     placeholder: string;
   }>;
+};
+
+export type TModalDataURLEmbedProps = TModalConfirmationProps & {
+  dataURL: string;
 };
 
 export type TModalConfirmationResponse = {
@@ -33,6 +35,8 @@ export type TModalPromptResponse = TModalConfirmationResponse & {
     value: string;
   }>;
 };
+
+export type TModalDataURLEmbedResponse = TModalConfirmationResponse;
 
 export type TModalResponseHandler<T extends TModalTypes> = {
   handleResponse: (props: TModalResponses<T>) => void;
@@ -48,16 +52,24 @@ export type TModalMethods = {
   ) => Promise<TModalResponses<'CONFIRMATION'>>;
 
   showPrompt: (props: TModalPromptProps) => Promise<TModalResponses<'PROMPT'>>;
+
+  showDataURLEmbed: (
+    props: TModalDataURLEmbedProps
+  ) => Promise<TModalResponses<'DATAURL_EMBED'>>;
 };
 
 export type TModalResponses<T extends TModalTypes> = T extends 'CONFIRMATION'
   ? TModalConfirmationResponse
   : T extends 'PROMPT'
   ? TModalPromptResponse
+  : T extends 'DATAURL_EMBED'
+  ? TModalDataURLEmbedResponse
   : unknown;
 
 export type TModal<T = TModalTypes> = T extends 'CONFIRMATION'
   ? TModalConfirmationProps & TModalSharedProps<T>
   : T extends 'PROMPT'
   ? TModalPromptProps & TModalSharedProps<T>
+  : T extends 'DATAURL_EMBED'
+  ? TModalDataURLEmbedProps & TModalSharedProps<T>
   : TModalSharedProps<null>;

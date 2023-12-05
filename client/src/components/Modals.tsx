@@ -1,6 +1,7 @@
 import { useModal } from '@/context/ModalContext';
 import {
   TModalConfirmationProps,
+  TModalDataURLEmbedProps,
   TModalPromptProps,
   TModalResponseHandler,
 } from '@/types/TModal';
@@ -97,10 +98,35 @@ const PromptModal = ({
   );
 };
 
+const DataURLEmbedModal = ({
+  title,
+  description,
+  buttons,
+  dataURL,
+  handleResponse,
+}: TModalDataURLEmbedProps & TModalResponseHandler<'DATAURL_EMBED'>) => {
+  const handleButtonPress = (uniqueId: string) => {
+    handleResponse({
+      responseUniqueIdButton: uniqueId,
+    });
+  };
+
+  return (
+    <div className="flex flex-col gap-3 w-auto">
+      <span className="text-2xl font-bold">{title}</span>
+      <span className="text-lg text-gray-500 break-words">{description}</span>
+      <div className="flex w-[80vw] h-[65vh]">
+        <iframe src={dataURL} width="100%" height="100%" />
+      </div>
+      <Buttons buttons={buttons} onButtonPress={handleButtonPress} />
+    </div>
+  );
+};
+
 export const ModalContainer = () => {
   const { type, showConfirmation, ...rest } = useModal();
   return (
-    <div className="absolute z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-md:w-[250px] w-[500px] bg-black rounded-xl p-10">
+    <div className="absolute z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black rounded-xl p-10">
       {type === 'CONFIRMATION' ? (
         <ConfirmationModal
           {...(rest as TModalConfirmationProps &
@@ -109,6 +135,11 @@ export const ModalContainer = () => {
       ) : type === 'PROMPT' ? (
         <PromptModal
           {...(rest as TModalPromptProps & TModalResponseHandler<'PROMPT'>)}
+        />
+      ) : type === 'DATAURL_EMBED' ? (
+        <DataURLEmbedModal
+          {...(rest as TModalDataURLEmbedProps &
+            TModalResponseHandler<'DATAURL_EMBED'>)}
         />
       ) : null}
     </div>
