@@ -66,6 +66,5 @@
 2. Install node dependencies
 3. Make sure you have the mysql server (you can download mysql from chocolatey if you testing from windows) or you can also create a dockerfile
 4. Create a copy of `.env.example` from server path then rename it to `.env` and complete the variables
-5. Run `npm run build`
-6. Run `npm run start:prod` (to start as production mode)
-7. Visit `http://localhost:3000`
+5. Run `npm run dev`
+6. Visit `http://localhost:5173`
