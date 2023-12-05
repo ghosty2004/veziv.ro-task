@@ -28,7 +28,7 @@ const Profile = ({ user }: { user: User }) => {
 
   const isModified = (key: keyof User) =>
     // @ts-ignore
-    typeof modifiedParts[key] !== 'undefined' ?? false;
+    typeof modifiedParts[key] !== 'undefined';
 
   const handleModifyCancel = () => {
     setModifiedParts({});
