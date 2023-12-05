@@ -4,6 +4,7 @@ import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
 import { Portfolio, User } from 'src/database/entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import SharedEntities from 'shared/api-entities';
 
 @Injectable()
 export class PortfoliosService {
@@ -30,7 +31,7 @@ export class PortfoliosService {
     }
   }
 
-  async findAll() {
+  async findAll(): Promise<SharedEntities.Portfolio[]> {
     return await this.portfolioRepository.find({
       where: {
         hidden: false,
@@ -38,7 +39,7 @@ export class PortfoliosService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<SharedEntities.Portfolio> {
     return await this.portfolioRepository.findOne({
       where: {
         id: id,

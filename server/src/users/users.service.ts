@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../database/entities';
 import { UpdateUserDto } from './dto';
+import type SharedEntities from 'shared/api-entities';
 
 @Injectable()
 export class UsersService {
@@ -10,7 +11,11 @@ export class UsersService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  async findAll(limit: number, name: string, email: string) {
+  async findAll(
+    limit: number,
+    name: string,
+    email: string,
+  ): Promise<SharedEntities.User[]> {
     const users = await this.userRepository
       .createQueryBuilder('user')
       .where('user.firstName like :name', { name: `%${name}%` })
@@ -23,7 +28,7 @@ export class UsersService {
     }));
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<SharedEntities.User> {
     const user = await this.userRepository
       .createQueryBuilder('user')
       .where('user.id = :id', { id })
@@ -46,7 +51,7 @@ export class UsersService {
     return user;
   }
 
-  async getMe(id: number) {
+  async getMe(id: number): Promise<SharedEntities.User> {
     const user = await this.userRepository.findOne({
       where: {
         id,
@@ -58,13 +63,16 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    user.portfolios = user.portfolios.map(({ dataURL, ...rest }) => ({
+    const portfolios = user.portfolios.map(({ dataURL, ...rest }) => ({
       ...rest,
     }));
 
     delete user.hashedPassword;
 
-    return user;
+    return {
+      ...user,
+      ...portfolios,
+    };
   }
 
   async updateMe(id: number, updateUser: UpdateUserDto) {

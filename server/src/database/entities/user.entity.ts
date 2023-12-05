@@ -37,8 +37,8 @@ export class User {
     length: 50,
     nullable: true,
   })
-  personalWebsite: string;
+  personalWebsite: string | null;
 
   @OneToMany(() => Portfolio, ({ user }) => user)
-  portfolios: Partial<Portfolio>[];
+  portfolios: Portfolio[];
 }
