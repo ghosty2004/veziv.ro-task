@@ -1,5 +1,13 @@
 # A small task from veziv.ro
 
+### Structure
+
+| Path     | Content                                                                                             |
+| -------- | --------------------------------------------------------------------------------------------------- |
+| `server` | The backend (with NestJS)                                                                           |
+| `client` | The frontend (with React and vite)                                                                  |
+| `shared` | The type declarations which are shared between frontend and backend for a better type-check quality |
+
 ### Images
 
 <details>
