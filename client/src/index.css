@@ -32,3 +32,19 @@ body {
     border-radius: 23px;
   }
 }
+
+::-webkit-scrollbar {
+  @apply w-[3px];
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-black;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-indigo-600/70;
+}
+
+*::selection {
+  @apply bg-indigo-600;
+}
