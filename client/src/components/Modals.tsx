@@ -82,7 +82,6 @@ const PromptModal = ({
               type={type === 'TEXT' ? 'text' : 'password'}
               className="bg-white/10 rounded p-2 outline-none"
               placeholder={placeholder}
-              value={inputValues[uniqueId]}
               onChange={(e) =>
                 setInputValues((prev) => ({
                   ...prev,
