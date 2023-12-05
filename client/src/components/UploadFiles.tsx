@@ -185,18 +185,17 @@ export const UploadFiles = () => {
                   });
                   resolve();
                 } else {
-                  const { error } = await API.makeRequest(
-                    {
-                      path: '/api/portfolios',
-                      method: 'POST',
-                      body: {
-                        name,
-                        website,
-                        dataURL: reader.result as string,
-                      },
+                  const { error } = await API.makeRequest({
+                    authorize: true,
+                  })({
+                    path: '/api/portfolios',
+                    method: 'POST',
+                    body: {
+                      name,
+                      website,
+                      dataURL: reader.result as string,
                     },
-                    localStorage.getItem('token')
-                  );
+                  });
                   if (typeof error !== 'undefined') {
                     setFileStatus(index, {
                       status: 'ERROR',

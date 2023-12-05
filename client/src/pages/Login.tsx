@@ -37,7 +37,7 @@ export const Login = () => {
 
     switch (type) {
       case 'LOGIN':
-        const { response, error } = await API.makeRequest({
+        const { response, error } = await API.makeRequest()({
           path: '/api/auth/login',
           method: 'POST',
           body: {
@@ -59,7 +59,7 @@ export const Login = () => {
           return;
 
         const { response: registerResponse, error: registerError } =
-          await API.makeRequest({
+          await API.makeRequest()({
             path: '/api/auth/register',
             method: 'POST',
             body: {

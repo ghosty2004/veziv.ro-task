@@ -43,14 +43,13 @@ const Profile = ({ user }: { user: User }) => {
   const handleModifySubmit = async (event: FormEvent) => {
     event.preventDefault();
 
-    const { error } = await API.makeRequest(
-      {
-        path: '/api/users/me',
-        method: 'PATCH',
-        body: modifiedParts,
-      },
-      localStorage.getItem('token')
-    );
+    const { error } = await API.makeRequest({
+      authorize: true,
+    })({
+      path: '/api/users/me',
+      method: 'PATCH',
+      body: modifiedParts,
+    });
 
     if (error) return toast(error.message, { type: 'error' });
 
@@ -143,13 +142,12 @@ const Portfolios = ({ user }: { user: User }) => {
   const [files, setFiles] = useState<Portfolio[]>(user.portfolios!);
 
   const handleItemRemove = async (index: number) => {
-    const { error } = await API.makeRequest(
-      {
-        path: `/api/portfolios/${files[index].id}`,
-        method: 'DELETE',
-      },
-      localStorage.getItem('token')
-    );
+    const { error } = await API.makeRequest({
+      authorize: true,
+    })({
+      path: `/api/portfolios/${files[index].id}`,
+      method: 'DELETE',
+    });
 
     if (typeof error !== 'undefined')
       return toast(error.message, { type: 'error' });
@@ -158,16 +156,15 @@ const Portfolios = ({ user }: { user: User }) => {
   };
 
   const handleVisibilityToggle = async (index: number) => {
-    const { error } = await API.makeRequest(
-      {
-        path: `/api/portfolios/${files[index].id}`,
-        method: 'PATCH',
-        body: {
-          hidden: !files[index].hidden,
-        },
+    const { error } = await API.makeRequest({
+      authorize: true,
+    })({
+      path: `/api/portfolios/${files[index].id}`,
+      method: 'PATCH',
+      body: {
+        hidden: !files[index].hidden,
       },
-      localStorage.getItem('token')
-    );
+    });
 
     if (typeof error !== 'undefined')
       return toast(error.message, { type: 'error' });

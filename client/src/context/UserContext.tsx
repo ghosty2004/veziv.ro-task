@@ -3,17 +3,16 @@ import { useQuery } from 'react-query';
 import { API } from '@/api';
 import type { User } from 'shared/api-entities';
 
-const UserContext = createContext<User | null>(null);
+const UserContext = createContext<User | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const { isLoading, data } = useQuery(['user'], () =>
-    API.makeRequest(
-      {
-        path: '/api/users/me',
-        method: 'GET',
-      },
-      localStorage.getItem('token')
-    ).then((res) => res)
+    API.makeRequest<User>({
+      authorize: true,
+    })({
+      path: '/api/users/me',
+      method: 'GET',
+    }).then((res) => res)
   );
 
   return !isLoading ? (
