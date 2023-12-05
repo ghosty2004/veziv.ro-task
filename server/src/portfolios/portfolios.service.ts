@@ -13,8 +13,6 @@ export class PortfoliosService {
   ) {}
 
   async create(user: User, createPortfolioDto: CreatePortfolioDto) {
-    const file = Buffer.from(createPortfolioDto.dataURL, 'base64url');
-
     const exists = await this.portfolioRepository.exist({
       where: {
         user,
@@ -25,7 +23,6 @@ export class PortfoliosService {
     if (!exists) {
       await this.portfolioRepository.save({
         ...createPortfolioDto,
-        file,
         user,
       });
     } else {
