@@ -12,7 +12,7 @@ import { PortfoliosModule } from './portfolios/portfolios.module';
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '../../', 'client', 'dist'),
-      renderPath: '/',
+      renderPath: '/*',
     }),
 
     DatabaseModule,
