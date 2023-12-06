@@ -2,11 +2,11 @@
 
 ### Structure
 
-| Path     | Content                                                                                             |
-| -------- | --------------------------------------------------------------------------------------------------- |
-| `server` | The backend (with NestJS)                                                                           |
-| `client` | The frontend (with React and vite)                                                                  |
-| `shared` | The type declarations which are shared between frontend and backend for a better type-check quality |
+| Path     | Technologies           | Content                                                          |
+| -------- | ---------------------- | ---------------------------------------------------------------- |
+| `server` | NestJS,TypeORM,Mysql   | The backend (server side)                                        |
+| `client` | React,Vite,Tailwindcss | The frontend (client side)                                       |
+| `shared` | d.ts declarations      | The type declarations which are shared between client and server |
 
 ### Images
 
